@@ -6,29 +6,9 @@ const config = require('../config');
 const User = require('../models/userModel');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'public/images' });
-const nodemailer = require('nodemailer');
+
 
 // Create a transporter with your email service provider's SMTP configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'fakerealemail0@gmail.com',
-    pass: 'Ss02082001'
-  }
-});
-async function sendWelcomeEmail(userEmail) {
-  try {
-    // Send welcome email
-    await transporter.sendMail({
-      from: 'fakerealemail0@gmail.com',
-      to: userEmail,
-      subject: 'Welcome to Ecolink',
-      text: 'Welcome to Your App! We are excited to have you on board.',
-    });
-  } catch (error) {
-    console.error('Error sending welcome email:', error);
-  }
-}
 
 
 // Sign up a new user
@@ -66,7 +46,7 @@ async function signup(req, res) {
 
   // Save the user to the database
   await user.save();
-  await sendWelcomeEmail(req.body.email);
+  //await sendWelcomeEmail(req.body.email);
   // Generate a JWT token
   const token = jwt.sign(
     {
@@ -87,22 +67,9 @@ async function signup(req, res) {
 
 
 // Saves the profile picture file to the database and returns the file path
-async function saveProfilePictureFile(profilePictureFile) {
-  // Generate a unique file name
-  const fileName = generateUniqueFileName(profilePictureFile.originalname);
 
-  // Save the profile picture file to the public/images directory
-  await profilePictureFile.mv(`public/images/${fileName}`);
 
-  // Return the file path
-  return `public/images/${fileName}`;
-}
-
-// Generates a unique file name
-function generateUniqueFileName(fileName) {
-  const timestamp = Date.now();
-  return `${timestamp}-${fileName}`;
-}
+// 
 // Sign in a user
 async function signin(req, res) {
   // Find the user by email
